@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "886142281613",
+    "project_id": "judgingapp-449cd",
+    "storage_bucket": "judgingapp-449cd.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:886142281613:android:2a335f2c490040fa667fc4",
+        "android_client_info": {
+          "package_name": "com.example.judging_app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBfJz3gWi1dhZu9Nh6AIezKNRaDN77zdsQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

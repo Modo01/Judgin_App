@@ -24,10 +24,10 @@ class _OtpScreenState extends State<OtpScreen> {
         Provider.of<AuthProvider>(context, listen: true).isLoading;
     return Scaffold(
       body: SafeArea(
-        child: isLoading == true
+        child: isLoading
             ? const Center(
                 child: CircularProgressIndicator(
-                  color: Colors.purple,
+                  color: Color(0xFF0E6BA8),
                 ),
               )
             : Center(
@@ -40,17 +40,14 @@ class _OtpScreenState extends State<OtpScreen> {
                         alignment: Alignment.topLeft,
                         child: GestureDetector(
                           onTap: () => Navigator.of(context).pop(),
-                          child: const Icon(Icons.arrow_back),
+                          child: const Icon(Icons.arrow_back,
+                              color: Color(0xFF0A2472)),
                         ),
                       ),
                       Container(
                         width: 200,
                         height: 200,
                         padding: const EdgeInsets.all(20.0),
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: Colors.purple.shade50,
-                        ),
                         child: Image.asset(
                           "assets/login.jpeg",
                         ),
@@ -61,6 +58,7 @@ class _OtpScreenState extends State<OtpScreen> {
                         style: TextStyle(
                           fontSize: 22,
                           fontWeight: FontWeight.bold,
+                          color: Color(0xFF001C55),
                         ),
                       ),
                       const SizedBox(height: 10),
@@ -83,7 +81,7 @@ class _OtpScreenState extends State<OtpScreen> {
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(10),
                             border: Border.all(
-                              color: Colors.purple.shade200,
+                              color: Color(0xFF0E6BA8),
                             ),
                           ),
                           textStyle: const TextStyle(
@@ -111,6 +109,7 @@ class _OtpScreenState extends State<OtpScreen> {
                                   context, "6 оронтой тоо оруулна уу?");
                             }
                           },
+                          color: Color(0xFF0E6BA8),
                         ),
                       ),
                       const SizedBox(height: 20),
@@ -128,7 +127,7 @@ class _OtpScreenState extends State<OtpScreen> {
                         style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.bold,
-                          color: Colors.purple,
+                          color: Color(0xFF0E6BA8),
                         ),
                       ),
                     ],
@@ -139,7 +138,6 @@ class _OtpScreenState extends State<OtpScreen> {
     );
   }
 
-  // verify otp
   void verifyOtp(BuildContext context, String userOtp) {
     final ap = Provider.of<AuthProvider>(context, listen: false);
     ap.verifyOtp(
@@ -147,33 +145,27 @@ class _OtpScreenState extends State<OtpScreen> {
       verificationId: widget.verificationId,
       userOtp: userOtp,
       onSuccess: () {
-        // checking whether user exists in the db
-        ap.checkExistingUser().then(
-          (value) async {
-            if (value == true) {
-              // user exists in our app
-              ap.getDataFromFirestore().then(
-                    (value) => ap.saveUserDataToSP().then(
-                          (value) => ap.setSignIn().then(
-                                (value) => Navigator.pushAndRemoveUntil(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) => const HomeScreen(),
-                                    ),
-                                    (route) => false),
-                              ),
-                        ),
-                  );
-            } else {
-              // new user
-              Navigator.pushAndRemoveUntil(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => const UserInformationScreen()),
-                  (route) => false);
-            }
-          },
-        );
+        ap.checkExistingUser().then((value) async {
+          if (value == true) {
+            ap.getDataFromFirestore().then(
+                  (value) => ap.saveUserDataToSP().then(
+                        (value) => ap.setSignIn().then(
+                              (value) => Navigator.pushAndRemoveUntil(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => const HomeScreen()),
+                                  (route) => false),
+                            ),
+                      ),
+                );
+          } else {
+            Navigator.pushAndRemoveUntil(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => const UserInformationScreen()),
+                (route) => false);
+          }
+        });
       },
     );
   }

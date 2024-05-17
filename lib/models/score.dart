@@ -1,40 +1,43 @@
 class Score {
-  String scoreId;
-  String competitionId;
-  String athleteId;
-  String judgeId;
-  String category;
-  double scoreValue;
+  final String competitionId;
+  final String attendantId; // Change from athleteId to attendantId
+  final String judgeId;
+  final String category;
+  final double scoreValue;
+  final String comment;
+  final String judgeType;
 
   Score({
-    required this.scoreId,
     required this.competitionId,
-    required this.athleteId,
+    required this.attendantId, // Change from athleteId to attendantId
     required this.judgeId,
     required this.category,
     required this.scoreValue,
+    required this.comment,
+    required this.judgeType,
   });
 
-  factory Score.fromMap(Map<String, dynamic> map) {
+  factory Score.fromMap(Map<String, dynamic> data) {
     return Score(
-      scoreId: map['scoreId'] ?? '',
-      competitionId: map['competitionId'] ?? '',
-      athleteId: map['athleteId'] ?? '',
-      judgeId: map['judgeId'] ?? '',
-      category: map['category'] ?? '',
-      scoreValue: map['scoreValue']?.toDouble() ?? 0.0,
+      competitionId: data['competitionId'],
+      attendantId: data['attendantId'], // Change from athleteId to attendantId
+      judgeId: data['judgeId'],
+      category: data['category'],
+      scoreValue: data['scoreValue'],
+      comment: data['comment'],
+      judgeType: data['judgeType'],
     );
   }
 
   Map<String, dynamic> toMap() {
     return {
-      'scoreId': scoreId,
       'competitionId': competitionId,
-      'athleteId': athleteId,
+      'attendantId': attendantId, // Change from athleteId to attendantId
       'judgeId': judgeId,
       'category': category,
       'scoreValue': scoreValue,
+      'comment': comment,
+      'judgeType': judgeType,
     };
   }
 }
-

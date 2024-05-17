@@ -16,14 +16,14 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
   Country selectedCountry = Country(
     phoneCode: "976",
-    countryCode: "<MN>",
+    countryCode: "MN",
     e164Sc: 0,
     geographic: true,
     level: 1,
-    name: "MN",
+    name: "Mongolia",
     example: "MN",
-    displayName: "MN",
-    displayNameNoCountryCode: "MN",
+    displayName: "Mongolia",
+    displayNameNoCountryCode: "Mongolia",
     e164Key: "",
   );
 
@@ -45,10 +45,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   width: 300,
                   height: 300,
                   padding: const EdgeInsets.all(20.0),
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: Colors.lightBlue.shade50,
-                  ),
                   child: Image.asset(
                     "assets/login.jpeg",
                   ),
@@ -57,35 +53,32 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 const Text(
                   "Нэвтрэх",
                   style: TextStyle(
-                    fontSize: 22,
+                    fontSize: 24,
                     fontWeight: FontWeight.bold,
+                    color: Color(0xFF00072D),
                   ),
                 ),
                 const SizedBox(height: 10),
                 const Text(
-                  "Дугаараа оруулна? Бид танд баталгаажуулах код явуулах болно.",
+                  "Дугаараа оруулна уу. Бид танд баталгаажуулах код явуулах болно.",
                   style: TextStyle(
-                    fontSize: 14,
-                    color: Colors.black38,
-                    fontWeight: FontWeight.bold,
+                    fontSize: 16,
+                    color: Color(0xFF001C55),
+                    fontWeight: FontWeight.w600,
                   ),
                   textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: 20),
                 TextFormField(
-                  cursorColor: Colors.lightBlue,
+                  cursorColor: Color(0xFF0A2472),
                   controller: phoneController,
                   style: const TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
+                    color: Color(0xFF001C55),
                   ),
-                  onChanged: (value) {
-                    setState(() {
-                      phoneController.text = value;
-                    });
-                  },
                   decoration: InputDecoration(
-                    hintText: "Утасны дугаараа оруулна уу.",
+                    hintText: "Утасны дугаараа оруулна уу",
                     hintStyle: TextStyle(
                       fontWeight: FontWeight.w500,
                       fontSize: 15,
@@ -93,11 +86,11 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     ),
                     enabledBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(10),
-                      borderSide: const BorderSide(color: Colors.black12),
+                      borderSide: const BorderSide(color: Color(0xFF001C55)),
                     ),
                     focusedBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(10),
-                      borderSide: const BorderSide(color: Colors.black12),
+                      borderSide: const BorderSide(color: Color(0xFF0A2472)),
                     ),
                     prefixIcon: Container(
                       padding: const EdgeInsets.all(8.0),
@@ -115,10 +108,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
                               });
                         },
                         child: Text(
-                          "${selectedCountry.flagEmoji} + ${selectedCountry.phoneCode}",
+                          " +${selectedCountry.phoneCode}",
                           style: const TextStyle(
                             fontSize: 18,
-                            color: Colors.black,
+                            color: Color(0xFF001C55),
                             fontWeight: FontWeight.bold,
                           ),
                         ),
@@ -147,7 +140,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   width: double.infinity,
                   height: 50,
                   child: CustomButton(
-                      text: "Нэвтрэх", onPressed: () => sendPhoneNumber()),
+                      text: "Нэвтрэх",
+                      onPressed: () => sendPhoneNumber(),
+                      color: Color(0xFF0A2472)),
                 ),
               ],
             ),

@@ -1,12 +1,12 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart'; // Ensure this package is included in your pubspec.yaml
+import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:judging_app/models/UserModel.dart';
 import 'package:judging_app/provider/auth_provider.dart';
 import 'package:judging_app/screens/homeScreen.dart';
-import 'package:judging_app/utils/utils.dart'; // Contains utility functions like `showSnackBar`
-import 'package:judging_app/widgets/custom_button.dart'; // Your custom button widget
+import 'package:judging_app/utils/utils.dart';
+import 'package:judging_app/widgets/custom_button.dart';
 
 class UserInformationScreen extends StatefulWidget {
   const UserInformationScreen({Key? key}) : super(key: key);
@@ -51,24 +51,23 @@ class _UserInformationScreenState extends State<UserInformationScreen> {
 
   void saveUserData(BuildContext context) {
     if (image == null) {
-      showSnackBar(context, "Please upload your profile photo.");
+      showSnackBar(context, "Өөрийн зургийг оруулна уу.");
       return;
     }
 
-    // Check if the role is 'Athlete' and if the trainerPhone field is not empty
     String? formattedTrainerPhone =
         selectedRole == 'Athlete' && trainerPhoneController.text.isNotEmpty
             ? "+976${trainerPhoneController.text.trim()}"
             : null;
 
     UserModel userModel = UserModel(
-      userId: "", // This will be set by Firebase Auth upon user creation
+      userId: "",
       firstName: firstnameController.text.trim(),
       lastName: lastnameController.text.trim(),
       email: emailController.text.trim(),
       role: selectedRole ?? "Not set",
-      profilePic: "", // This will be updated after image upload
-      phoneNumber: "", // This should be set by previous authentication steps
+      profilePic: "",
+      phoneNumber: "",
       clubName: clubNameController.text.trim(),
       nationalId: nationalIdController.text.trim(),
       gender: selectedGender ?? "",
@@ -94,7 +93,18 @@ class _UserInformationScreenState extends State<UserInformationScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("User Information")),
+      appBar: AppBar(
+        title: Text(
+          "Хэрэглэгчийн мэдээлэл",
+          style: TextStyle(
+            fontSize: 24,
+            fontWeight: FontWeight.bold,
+            color: Colors.white,
+          ),
+        ),
+        iconTheme: IconThemeData(color: Colors.white),
+        backgroundColor: Color(0xFF00072D),
+      ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -105,22 +115,27 @@ class _UserInformationScreenState extends State<UserInformationScreen> {
                 radius: 50,
                 backgroundImage: image != null ? FileImage(image!) : null,
                 child: image == null
-                    ? const Icon(Icons.add_a_photo, size: 50)
+                    ? const Icon(Icons.add_a_photo,
+                        size: 50, color: Colors.white)
                     : null,
+                backgroundColor: Color(0xFF0E6BA8),
               ),
             ),
             const SizedBox(height: 20),
-            buildTextField("First Name", Icons.person, TextInputType.name,
-                firstnameController),
-            buildTextField("Last Name", Icons.person_outline,
-                TextInputType.name, lastnameController),
-            buildTextField("Email", Icons.email, TextInputType.emailAddress,
-                emailController),
+            buildTextField(
+                "Нэр", Icons.person, TextInputType.name, firstnameController),
+            const SizedBox(height: 10),
+            buildTextField("Овог", Icons.person_outline, TextInputType.name,
+                lastnameController),
+            const SizedBox(height: 10),
+            buildTextField("Цахим хаяг", Icons.email,
+                TextInputType.emailAddress, emailController),
+            const SizedBox(height: 10),
             DropdownButtonFormField<String>(
               value: selectedRole,
               decoration: InputDecoration(
-                icon: Icon(Icons.supervisor_account),
-                labelText: 'Select Role',
+                labelText: 'Нэвтрэх эрхээ сонгоно уу',
+                border: OutlineInputBorder(),
               ),
               onChanged: (newValue) {
                 setState(() {
@@ -136,23 +151,29 @@ class _UserInformationScreenState extends State<UserInformationScreen> {
               }).toList(),
             ),
             if (selectedRole == 'Trainer')
-              buildTextField("Club Name", Icons.signal_cellular_0_bar,
-                  TextInputType.text, clubNameController),
-            if (selectedRole == 'Athlete')
-              buildTextField("Trainer's Phone Number", Icons.phone,
-                  TextInputType.phone, trainerPhoneController),
-            if (selectedRole == 'Athlete')
-              buildTextField("National ID", Icons.perm_identity,
+              Padding(
+                padding: const EdgeInsets.only(top: 10.0),
+                child: buildTextField("Клубын нэр", Icons.signal_cellular_0_bar,
+                    TextInputType.text, clubNameController),
+              ),
+            if (selectedRole == 'Athlete') ...[
+              Padding(
+                padding: const EdgeInsets.only(top: 10.0),
+                child: buildTextField("Дасгалжуулагчийн утасны дугаар",
+                    Icons.phone, TextInputType.phone, trainerPhoneController),
+              ),
+              const SizedBox(height: 10),
+              buildTextField("Регистрийн дугаар", Icons.perm_identity,
                   TextInputType.number, nationalIdController),
-            if (selectedRole == 'Athlete')
-              buildTextField("Age", Icons.calendar_today, TextInputType.number,
+              const SizedBox(height: 10),
+              buildTextField("Нас", Icons.calendar_today, TextInputType.number,
                   ageController),
-            if (selectedRole == 'Athlete')
+              const SizedBox(height: 10),
               DropdownButtonFormField<String>(
                 value: selectedGender,
                 decoration: InputDecoration(
-                  icon: Icon(Icons.transgender),
-                  labelText: 'Select Gender',
+                  labelText: 'Хүйсээ сонгоно уу',
+                  border: OutlineInputBorder(),
                 ),
                 onChanged: (newValue) {
                   setState(() {
@@ -167,14 +188,17 @@ class _UserInformationScreenState extends State<UserInformationScreen> {
                   );
                 }).toList(),
               ),
+            ],
             const SizedBox(height: 20),
             CustomButton(
-              text: "Continue",
+              text: "Үргэлжлүүлэх",
               onPressed: () => saveUserData(context),
+              color: Color(0xFF0E6BA8),
             ),
           ],
         ),
       ),
+      backgroundColor: Color(0xFFE1F5FE),
     );
   }
 
@@ -185,6 +209,12 @@ class _UserInformationScreenState extends State<UserInformationScreen> {
         labelText: hintText,
         prefixIcon: Icon(icon),
         border: OutlineInputBorder(),
+        enabledBorder: const OutlineInputBorder(
+          borderSide: BorderSide(color: Color(0xFF0E6BA8)),
+        ),
+        focusedBorder: const OutlineInputBorder(
+          borderSide: BorderSide(color: Color(0xFF0A2472)),
+        ),
       ),
       controller: controller,
       keyboardType: inputType,

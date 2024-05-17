@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:judging_app/screens/CompetitionListScreen.dart';
-import 'package:judging_app/screens/ProfileScreen.dart';
-import 'package:judging_app/screens/CompetitionCreationScreen.dart'; // Import the competition creation screen
+import 'package:judging_app/screens/CompetitionListScreen.dart'; // Assuming this exists
+import 'package:judging_app/screens/ProfileScreen.dart'; // Assuming this exists
+import 'package:judging_app/screens/CompetitionCreationScreen.dart'; // Assuming this exists
 
 class AdminScreen extends StatefulWidget {
   const AdminScreen({super.key});
@@ -13,7 +13,7 @@ class AdminScreen extends StatefulWidget {
 class _AdminScreenState extends State<AdminScreen> {
   int _selectedIndex = 0;
 
-  static List<Widget> _widgetOptions = <Widget>[
+  final List<Widget> _widgetOptions = <Widget>[
     CompetitionListScreen(),
     ProfileScreen(),
   ];
@@ -34,31 +34,30 @@ class _AdminScreenState extends State<AdminScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Admin'),
-      ),
-      body: Center(
-        child: _widgetOptions.elementAt(_selectedIndex),
-      ),
+      body: _widgetOptions.elementAt(_selectedIndex),
       bottomNavigationBar: BottomNavigationBar(
-        items: const <BottomNavigationBarItem>[
+        backgroundColor: Color(0xFF001C55),
+        selectedItemColor: Color(0xFFA6E1FA),
+        unselectedItemColor:
+            Color(0xFF0E6BA8), // Changed color for better visibility
+        onTap: _onItemTapped,
+        currentIndex: _selectedIndex,
+        items: [
           BottomNavigationBarItem(
             icon: Icon(Icons.list),
-            label: 'Competitions',
+            label: 'Тэмцээнүүд',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.person),
-            label: 'Profile',
+            label: 'Хувийн хэрэг',
           ),
         ],
-        currentIndex: _selectedIndex,
-        selectedItemColor: Colors.amber[800],
-        onTap: _onItemTapped,
       ),
       floatingActionButton: _selectedIndex == 0
           ? FloatingActionButton(
               onPressed: _navigateToCompetitionCreation,
-              child: Icon(Icons.add),
+              child: Icon(Icons.add, color: Colors.white),
+              backgroundColor: Color(0xFF0E6BA8),
               tooltip: 'Add Competition',
             )
           : null, // Only show the FAB when the competitions list is displayed

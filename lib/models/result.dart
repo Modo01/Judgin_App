@@ -1,35 +1,69 @@
 class Result {
-  String resultId;
-  String competitionId;
-  String participantId;
-  double finalScore;
-  int rank;
+  final String resultId;
+  final String competitionId;
+  final String attendantId;
+  final String attendantName;
+  final String category;
+  final double finalScore;
+  final int rank;
+  final String ageGroup; // Add ageGroup field
 
   Result({
     required this.resultId,
     required this.competitionId,
-    required this.participantId,
+    required this.attendantId,
+    required this.attendantName,
+    required this.category,
     required this.finalScore,
     required this.rank,
+    required this.ageGroup, // Initialize ageGroup field
   });
+
+  factory Result.fromMap(Map<String, dynamic> data) {
+    return Result(
+      resultId: data['resultId'],
+      competitionId: data['competitionId'],
+      attendantId: data['attendantId'],
+      attendantName: data['attendantName'],
+      category: data['category'],
+      finalScore: data['finalScore'],
+      rank: data['rank'],
+      ageGroup: data['ageGroup'], // Add ageGroup field
+    );
+  }
 
   Map<String, dynamic> toMap() {
     return {
       'resultId': resultId,
       'competitionId': competitionId,
-      'participantId': participantId,
+      'attendantId': attendantId,
+      'attendantName': attendantName,
+      'category': category,
       'finalScore': finalScore,
       'rank': rank,
+      'ageGroup': ageGroup, // Add ageGroup field
     };
   }
 
-  factory Result.fromMap(Map<String, dynamic> map) {
+  Result copyWith({
+    String? resultId,
+    String? competitionId,
+    String? attendantId,
+    String? attendantName,
+    String? category,
+    double? finalScore,
+    int? rank,
+    String? ageGroup,
+  }) {
     return Result(
-      resultId: map['resultId'] ?? '',
-      competitionId: map['competitionId'] ?? '',
-      participantId: map['participantId'] ?? '',
-      finalScore: map['finalScore']?.toDouble() ?? 0.0,
-      rank: map['rank'] ?? 0,
+      resultId: resultId ?? this.resultId,
+      competitionId: competitionId ?? this.competitionId,
+      attendantId: attendantId ?? this.attendantId,
+      attendantName: attendantName ?? this.attendantName,
+      category: category ?? this.category,
+      finalScore: finalScore ?? this.finalScore,
+      rank: rank ?? this.rank,
+      ageGroup: ageGroup ?? this.ageGroup,
     );
   }
 }

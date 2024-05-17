@@ -22,6 +22,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
   TextEditingController _firstNameController = TextEditingController();
   TextEditingController _lastNameController = TextEditingController();
   TextEditingController _emailController = TextEditingController();
+  TextEditingController _phoneController = TextEditingController();
+  TextEditingController _ageController = TextEditingController();
+  TextEditingController _genderController = TextEditingController();
+  TextEditingController _nationalIdController = TextEditingController();
 
   @override
   void initState() {
@@ -35,6 +39,18 @@ class _ProfileScreenState extends State<ProfileScreen> {
     _firstNameController.text = _userModel.firstName;
     _lastNameController.text = _userModel.lastName;
     _emailController.text = _userModel.email;
+    _phoneController.text = _userModel.phoneNumber;
+    if (_userModel.role == 'Athlete') {
+      if (_userModel.age != null) {
+        _ageController.text = _userModel.age.toString();
+      }
+      if (_userModel.gender != null) {
+        _genderController.text = _userModel.gender!;
+      }
+      if (_userModel.nationalId != null) {
+        _nationalIdController.text = _userModel.nationalId!;
+      }
+    }
   }
 
   @override
@@ -42,6 +58,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
     _firstNameController.dispose();
     _lastNameController.dispose();
     _emailController.dispose();
+    _phoneController.dispose();
+    _ageController.dispose();
+    _genderController.dispose();
+    _nationalIdController.dispose();
     super.dispose();
   }
 
@@ -59,6 +79,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
       _userModel.firstName = _firstNameController.text;
       _userModel.lastName = _lastNameController.text;
       _userModel.email = _emailController.text;
+      _userModel.phoneNumber = _phoneController.text;
+      if (_userModel.role == 'Athlete') {
+        if (_ageController.text.isNotEmpty) {
+          _userModel.age = int.parse(_ageController.text);
+        }
+        _userModel.gender = _genderController.text;
+        _userModel.nationalId = _nationalIdController.text;
+      }
 
       try {
         await FirebaseFirestore.instance
@@ -66,15 +94,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
             .doc(_userModel.userId)
             .update(_userModel.toMap());
 
-        print("Хувийн мэдээлэл хадгалагдлаа.");
         setState(() {
           _isEditing = false;
         });
 
         ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text("Хувийн мэдээлэл амжилттай засагдлаа!")));
+            SnackBar(content: Text("Хувийн мэдээлэл амжилттай шинэчлэгдлээ!")));
       } catch (e) {
-        print("Error updating profile: $e");
         ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(content: Text("Failed to update profile: $e")));
       }
@@ -82,17 +108,29 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   Widget _editButton() {
-    return IconButton(
-      icon: Icon(_isEditing ? Icons.check : Icons.edit),
-      onPressed: () {
-        if (_isEditing) {
-          _saveProfile();
-        } else {
-          setState(() {
-            _isEditing = true;
-          });
-        }
-      },
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 8.0),
+      child: Container(
+        decoration: BoxDecoration(
+          color: _isEditing ? Colors.green : Colors.blue,
+          borderRadius: BorderRadius.circular(8.0),
+        ),
+        child: IconButton(
+          icon: Icon(
+            _isEditing ? Icons.check : Icons.edit,
+            color: Colors.white,
+          ),
+          onPressed: () {
+            if (_isEditing) {
+              _saveProfile();
+            } else {
+              setState(() {
+                _isEditing = true;
+              });
+            }
+          },
+        ),
+      ),
     );
   }
 
@@ -101,25 +139,20 @@ class _ProfileScreenState extends State<ProfileScreen> {
     return TextFormField(
       controller: controller,
       decoration: InputDecoration(
-          labelText: label,
-          border: OutlineInputBorder(),
-          enabledBorder: OutlineInputBorder(
-            borderSide: BorderSide(color: Colors.black, width: 1.0),
-          ),
-          focusedBorder: OutlineInputBorder(
-            borderSide: BorderSide(color: Colors.blue, width: 2.0),
-          ),
-          fillColor: enable
-              ? Colors.black12
-              : Colors.grey[300], 
-          filled: true, 
-          labelStyle: TextStyle(
-              color: enable
-                  ? Colors.black
-                  : Colors.grey 
-              )),
+        labelText: label,
+        border: OutlineInputBorder(),
+        enabledBorder: OutlineInputBorder(
+          borderSide: BorderSide(color: Colors.black, width: 1.0),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderSide: BorderSide(color: Colors.blue, width: 2.0),
+        ),
+        fillColor: enable ? Colors.black12 : Colors.grey[300],
+        filled: true,
+        labelStyle: TextStyle(color: enable ? Colors.black : Colors.grey),
+      ),
       enabled: enable,
-      style: TextStyle(color: Colors.black), // Text color
+      style: TextStyle(color: Colors.black),
       validator: (value) =>
           value == null || value.isEmpty ? 'Please enter $label' : null,
     );
@@ -130,10 +163,21 @@ class _ProfileScreenState extends State<ProfileScreen> {
     final ap = Provider.of<AuthProvider>(context);
     return Scaffold(
       appBar: AppBar(
-        title: Text("Хувийн мэдээлэл"),
+        title: Text(
+          "Хувийн мэдээлэл",
+          style: TextStyle(
+            fontSize: 24,
+            fontWeight: FontWeight.bold,
+            color: Colors.white,
+          ),
+        ),
+        backgroundColor: Color(0xFF001C55),
         actions: [
           _editButton(),
         ],
+        iconTheme: IconThemeData(
+          color: Colors.white,
+        ),
       ),
       body: SingleChildScrollView(
         padding: EdgeInsets.all(16),
@@ -162,20 +206,29 @@ class _ProfileScreenState extends State<ProfileScreen> {
               SizedBox(height: 10),
               _buildTextField(_lastNameController, 'Овог', _isEditing),
               SizedBox(height: 10),
-              _buildTextField(_emailController, 'Цахим хаяг', _isEditing),
+              _buildTextField(_emailController, 'Цахим шуудан', _isEditing),
+              SizedBox(height: 10),
+              _buildTextField(_phoneController, 'Утас', _isEditing),
+              if (_userModel.role == 'Athlete') ...[
+                SizedBox(height: 10),
+                _buildTextField(_ageController, 'Нас', _isEditing),
+                SizedBox(height: 10),
+                _buildTextField(_genderController, 'Хүйс', _isEditing),
+                SizedBox(height: 10),
+                _buildTextField(
+                    _nationalIdController, 'Регистрийн дугаар', _isEditing),
+              ],
               SizedBox(height: 20),
               if (_isEditing)
                 ElevatedButton(
                   onPressed: _saveProfile,
                   child: Text("Хадгалах"),
                   style: ElevatedButton.styleFrom(
-                    primary: Colors.lightBlue, // Background color
-                    onPrimary: Colors.white, // Text color
-                    padding: EdgeInsets.symmetric(
-                        horizontal: 30,
-                        vertical: 15), // Button padding for bigger size
+                    foregroundColor: Colors.white,
+                    backgroundColor: Color(0xFF0A2472),
+                    padding: EdgeInsets.symmetric(horizontal: 30, vertical: 15),
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8), // Rounded corners
+                      borderRadius: BorderRadius.circular(8),
                     ),
                   ),
                 ),
@@ -190,18 +243,16 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         ),
                       );
                 },
-                child: Text("Системээс гарах"),
+                child: Text("Гарах"),
                 style: ElevatedButton.styleFrom(
-                  primary: Colors.lightBlue, 
-                  onPrimary: Colors.white, 
-                  padding: EdgeInsets.symmetric(
-                      horizontal: 30,
-                      vertical: 15),
+                  foregroundColor: Colors.white,
+                  backgroundColor: Color(0xFF0A2472),
+                  padding: EdgeInsets.symmetric(horizontal: 30, vertical: 15),
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8), 
+                    borderRadius: BorderRadius.circular(8),
                   ),
                 ),
-              )
+              ),
             ],
           ),
         ),

@@ -57,15 +57,21 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                 const SizedBox(height: 20),
                 const Text(
                   "Эхэлцгээе",
-                  style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+                  style: TextStyle(
+                    fontSize: 28,
+                    fontWeight: FontWeight.bold,
+                    color: Color(0xFF00072D),
+                  ),
                 ),
                 const SizedBox(height: 10),
                 const Text(
                   "Одоо л эхлэхэд хамгийн тохиромжтой цаг",
                   style: TextStyle(
-                      fontSize: 14,
-                      color: Colors.black38,
-                      fontWeight: FontWeight.bold),
+                    fontSize: 16,
+                    color: Color(0xFF001C55),
+                    fontWeight: FontWeight.w600,
+                  ),
+                  textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: 20),
                 SizedBox(
@@ -74,9 +80,13 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                   child: CustomButton(
                     onPressed: _navigateBasedOnAuthState,
                     text: "Эхлүүлэх",
+                    color: Color(0xFF0A2472),
+                    textColor: Colors.white,
                   ),
                 ),
-                if (_isLoading) CircularProgressIndicator(),
+                const SizedBox(height: 20),
+                if (_isLoading)
+                  CircularProgressIndicator(color: Color(0xFF0A2472)),
               ],
             ),
           ),

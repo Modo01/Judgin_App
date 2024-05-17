@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:judging_app/models/competition.dart';
-import 'package:judging_app/screens/addAthleteToCompetitionForm.dart';
-import 'package:judging_app/screens/competitorstab.dart';
-import 'package:judging_app/screens/rankingtab.dart';
+import 'package:judging_app/screens/AttendantsListScreen.dart';
+import 'package:judging_app/screens/RankingScreen.dart';
 
 class CompetitionDetailsScreen extends StatefulWidget {
   final String competitionId;
@@ -21,110 +20,43 @@ class CompetitionDetailsScreen extends StatefulWidget {
 
 class _CompetitionDetailsScreenState extends State<CompetitionDetailsScreen> {
   int _currentIndex = 0;
-  late final List<Widget> _screens;
-  TextEditingController searchController = TextEditingController();
-  String? selectedCategory;
-  String? selectedAgeGroup;
+
+  late List<Widget> _screens;
 
   @override
   void initState() {
     super.initState();
     _screens = [
-      CompetitorsTab(competitionId: widget.competitionId),
-      RankingsTab(competitionId: widget.competitionId),
+      AttendantsListScreen(competitionId: widget.competitionId),
+      RankingScreen(competitionId: widget.competitionId),
     ];
-  }
-
-  Widget buildSearchBar() {
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: TextField(
-        controller: searchController,
-        decoration: InputDecoration(
-          labelText: 'Search Athletes',
-          suffixIcon: Icon(Icons.search),
-          border: OutlineInputBorder(),
-        ),
-        onChanged: (value) {
-          // Implement search functionality in CompetitorsTab
-        },
-      ),
-    );
-  }
-
-  Widget buildFilterChips(List<String> items, String? selectedItem,
-      Function(String?) onSelect, String label) {
-    bool isSingle = items.length == 1;
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16.0),
-          child: Text(label, style: TextStyle(fontWeight: FontWeight.bold)),
-        ),
-        SingleChildScrollView(
-          scrollDirection: Axis.horizontal,
-          child: Row(
-            children: items.map((item) {
-              bool isSelected = selectedItem == item || isSingle;
-              return Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 4.0),
-                child: ChoiceChip(
-                  label: Text(item),
-                  selected: isSelected,
-                  onSelected: isSingle
-                      ? null
-                      : (selected) {
-                          onSelect(selected ? item : null);
-                        },
-                ),
-              );
-            }).toList(),
-          ),
-        ),
-      ],
-    );
-  }
-
-  void navigateToAddAthlete() {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => AddAthleteToCompetitionForm(
-          competitionId: widget.competitionId,
-        ),
-      ),
-    );
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('${widget.competition.name} Details'),
-      ),
-      body: Column(
-        children: [
-          buildSearchBar(),
-          buildFilterChips(
-              widget.competition.categories,
-              selectedCategory,
-              (category) => setState(() => selectedCategory = category),
-              "Categories"),
-          buildFilterChips(
-              widget.competition.ageGroup,
-              selectedAgeGroup,
-              (ageGroup) => setState(() => selectedAgeGroup = ageGroup),
-              "Age Groups"),
-          Expanded(
-            child: IndexedStack(
-              index: _currentIndex,
-              children: _screens,
-            ),
-          ),
-        ],
+      appBar: _currentIndex == 0
+          ? AppBar(
+              title: Text(
+                '${widget.competition.name}',
+                style: TextStyle(
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white,
+                ),
+              ),
+              iconTheme: IconThemeData(color: Colors.white),
+              backgroundColor: Color(0xFF00072D),
+            )
+          : null,
+      body: IndexedStack(
+        index: _currentIndex,
+        children: _screens,
       ),
       bottomNavigationBar: BottomNavigationBar(
+        backgroundColor: Color(0xFF001C55),
+        selectedItemColor: Color(0xFFA6E1FA),
+        unselectedItemColor: Color(0xFF0E6BA8),
         currentIndex: _currentIndex,
         onTap: (index) {
           setState(() {
@@ -134,18 +66,13 @@ class _CompetitionDetailsScreenState extends State<CompetitionDetailsScreen> {
         items: [
           BottomNavigationBarItem(
             icon: Icon(Icons.list),
-            label: 'Competitors',
+            label: 'Оролцогчид',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.score),
-            label: 'Rankings',
+            label: 'Үр дүн',
           ),
         ],
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: navigateToAddAthlete,
-        child: Icon(Icons.add),
-        tooltip: 'Add Athlete to Competition',
       ),
     );
   }

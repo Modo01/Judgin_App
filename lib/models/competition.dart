@@ -7,18 +7,16 @@ class Competition {
   final String location;
   final List<String> categories;
   final List<String> judges;
-  final List<String> teams;
   final DateTime startDate;
 
   Competition({
     required this.competitionId,
     required this.name,
     required this.ageGroup,
-    required this.location, 
+    required this.location,
     required this.categories,
     required this.judges,
     required this.startDate,
-    required this.teams,
   });
 
   factory Competition.fromFirestore(
@@ -35,12 +33,7 @@ class Competition {
           ? List<String>.from(data['categories'])
           : [],
       judges: data['judges'] is List ? List<String>.from(data['judges']) : [],
-      startDate: data['startDate'] is Timestamp
-          ? (data['startDate'] as Timestamp).toDate()
-          : DateTime.now(),
-      teams: data['athletes'] is List ? List<String>.from(data['athletes']) : [],
+      startDate: DateTime.parse(data['startDate'] ?? DateTime.now().toString()),
     );
   }
-
-  String? get selectedAgeGroup => null;
 }

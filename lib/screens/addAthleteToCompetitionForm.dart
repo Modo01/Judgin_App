@@ -49,7 +49,6 @@ class _AddAthleteToCompetitionFormState
         });
       }
     } catch (e) {
-      print('Error fetching competition details: $e');
       setState(() => isLoading = false);
     }
   }
@@ -74,7 +73,6 @@ class _AddAthleteToCompetitionFormState
         });
       }
     } catch (e) {
-      print('Error fetching athletes: $e');
       setState(() => isLoading = false);
     }
   }
@@ -86,12 +84,12 @@ class _AddAthleteToCompetitionFormState
     }).toList();
     setState(() {
       displayedAthletes = filtered;
-      applyFilters(); // Make sure to apply other filters like category or age group if already selected.
+      applyFilters();
     });
   }
 
   void applyFilters() {
-    List<UserModel> filtered = displayedAthletes.where((athlete) {
+    List<UserModel> filtered = allAthletes.where((athlete) {
       bool ageGroupMatch = true;
       if (selectedAgeGroup != null) {
         switch (selectedAgeGroup) {
@@ -100,26 +98,50 @@ class _AddAthleteToCompetitionFormState
             break;
           case 'JR':
             ageGroupMatch =
-                athlete.age != null && athlete.age! >= 13 && athlete.age! <= 17;
+                athlete.age != null && athlete.age! >= 16 && athlete.age! <= 17;
             break;
           case 'AG':
-            ageGroupMatch = athlete.age != null && athlete.age! <= 12;
+            ageGroupMatch = athlete.age != null && athlete.age! <= 15;
             break;
+          default:
+            ageGroupMatch = true;
         }
       }
 
       bool categoryMatch = true;
-      if (selectedCategory == 'IM') {
-        categoryMatch = athlete.gender == 'Male';
-      } else if (selectedCategory == 'IW') {
-        categoryMatch = athlete.gender == 'Female';
+      if (selectedCategory != null) {
+        if (selectedCategory == 'IM') {
+          categoryMatch = athlete.gender == 'Male';
+        } else if (selectedCategory == 'IW') {
+          categoryMatch = athlete.gender == 'Female';
+        } else {
+          categoryMatch = true;
+        }
       }
 
-      return ageGroupMatch && categoryMatch;
+      bool nameMatch = athlete.firstName
+              .toLowerCase()
+              .contains(searchController.text.toLowerCase()) ||
+          athlete.lastName
+              .toLowerCase()
+              .contains(searchController.text.toLowerCase());
+
+      return ageGroupMatch && categoryMatch && nameMatch;
     }).toList();
 
     setState(() {
       displayedAthletes = filtered;
+    });
+  }
+
+  void clearForm() {
+    setState(() {
+      selectedCategory = null;
+      selectedAgeGroup = null;
+      teamName = null;
+      searchController.clear();
+      selectedAthletes.clear();
+      displayedAthletes = List.from(allAthletes);
     });
   }
 
@@ -146,6 +168,11 @@ class _AddAthleteToCompetitionFormState
                     onSelect(selected ? item : null);
                     applyFilters();
                   },
+                  selectedColor: Colors.blue,
+                  backgroundColor: Colors.lightBlue[100],
+                  labelStyle: TextStyle(
+                      color:
+                          selectedItem == item ? Colors.white : Colors.black),
                 ),
               );
             }).toList(),
@@ -161,35 +188,126 @@ class _AddAthleteToCompetitionFormState
       child: TextField(
         controller: searchController,
         decoration: InputDecoration(
-          labelText: 'Search by Name',
-          suffixIcon: Icon(Icons.search),
-          border: OutlineInputBorder(),
+          labelText: 'Тамирчин хайх',
+          suffixIcon: Container(
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(8.0),
+            ),
+            child: Icon(Icons.search, color: Colors.white),
+          ),
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(8.0),
+            borderSide: BorderSide(color: Colors.black26),
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(8.0),
+            borderSide: BorderSide(color: Colors.blue, width: 2.0),
+          ),
+          filled: true,
+          fillColor: Colors.white,
         ),
         onChanged: filterAthletes,
       ),
     );
   }
 
+  void addAthletesToCompetition() async {
+    if (selectedCategory == null || selectedAgeGroup == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Ангилал болон насны ангиллаас заавал сонгоно уу!'),
+          backgroundColor: Colors.red,
+        ),
+      );
+      return;
+    }
+
+    if (selectedAthletes.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Та тамирчин сонгоогүй байна. Тамирчин сонгоно уу!'),
+          backgroundColor: Colors.red,
+        ),
+      );
+      return;
+    }
+
+    if (['IM', 'IW'].contains(selectedCategory) &&
+        selectedAthletes.length > 1) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+              'Ганцаарчилсан эрэгтэй, эмэгтэй төрөл зөвхөн ганц тамирчин л оролцоно.'),
+          backgroundColor: Colors.red,
+        ),
+      );
+      return;
+    }
+
+    Map<String, dynamic> data = {
+      'competitionId': widget.competitionId,
+      'category': selectedCategory,
+      'ageGroup': selectedAgeGroup,
+      'athletes': selectedAthletes,
+      'attendantName': teamName ??
+          (selectedCategory == 'IM' || selectedCategory == 'IW'
+              ? displayedAthletes
+                      .firstWhere(
+                          (athlete) => athlete.userId == selectedAthletes.first)
+                      .lastName +
+                  " " +
+                  displayedAthletes
+                      .firstWhere(
+                          (athlete) => athlete.userId == selectedAthletes.first)
+                      .firstName
+              : 'Team/Group'),
+    };
+
+    await FirebaseFirestore.instance
+        .collection('attendants')
+        .add(data)
+        .then((value) {
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text('Оролцогч амжилттай нэмлээ!')));
+      clearForm();
+      // ignore: invalid_return_type_for_catch_error
+    }).catchError((error) => ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Error adding athletes: $error'))));
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("Add Athlete to Competition")),
+      appBar: AppBar(
+        title: Text(
+          "Тэмцээнд Бүртгүүлэх",
+          style: TextStyle(
+            fontSize: 24,
+            fontWeight: FontWeight.bold,
+            color: Colors.white,
+          ),
+        ),
+        iconTheme: IconThemeData(color: Colors.white),
+        backgroundColor: Color(0xFF001C55),
+      ),
       body: isLoading
-          ? CircularProgressIndicator()
+          ? Center(child: CircularProgressIndicator())
           : Column(
               children: [
                 buildSearchBar(),
                 if (competition != null) ...[
                   buildFilterChips(
-                      competition!.categories,
-                      selectedCategory,
-                      (value) => setState(() => selectedCategory = value),
-                      "Category"),
+                    competition!.categories,
+                    selectedCategory,
+                    (value) => setState(() => selectedCategory = value),
+                    "Төрөл",
+                  ),
                   buildFilterChips(
-                      competition!.ageGroup,
-                      selectedAgeGroup,
-                      (value) => setState(() => selectedAgeGroup = value),
-                      "Age Group"),
+                    competition!.ageGroup,
+                    selectedAgeGroup,
+                    (value) => setState(() => selectedAgeGroup = value),
+                    "Насны ангилал",
+                  ),
                 ],
                 if (['MP', 'TR', 'GR', 'AD', 'AS'].contains(selectedCategory))
                   Padding(
@@ -197,7 +315,7 @@ class _AddAthleteToCompetitionFormState
                         horizontal: 20, vertical: 10),
                     child: TextField(
                       decoration: InputDecoration(
-                        labelText: 'Team Name',
+                        labelText: 'Багийн нэр',
                         border: OutlineInputBorder(),
                       ),
                       onChanged: (value) => teamName = value,
@@ -210,8 +328,6 @@ class _AddAthleteToCompetitionFormState
                       final athlete = displayedAthletes[index];
                       return CheckboxListTile(
                         title: Text('${athlete.firstName} ${athlete.lastName}'),
-                        subtitle: Text(
-                            'Age: ${athlete.age} - Gender: ${athlete.gender}'),
                         value: selectedAthletes.contains(athlete.userId),
                         onChanged: (bool? selected) {
                           setState(() {
@@ -228,30 +344,22 @@ class _AddAthleteToCompetitionFormState
                     },
                   ),
                 ),
-                ElevatedButton(
-                  onPressed: () {
-                    if (selectedCategory != null &&
-                        selectedAthletes.isNotEmpty) {
-                      FirebaseFirestore.instance
-                          .collection('attendants')
-                          .add({
-                            'competitionId': widget.competitionId,
-                            'category': selectedCategory,
-                            'ageGroup': selectedAgeGroup,
-                            'athletes': selectedAthletes,
-                            'attendantName': teamName ?? 'Individual',
-                          })
-                          .then((value) => ScaffoldMessenger.of(context)
-                              .showSnackBar(SnackBar(
-                                  content:
-                                      Text('Athletes added successfully!'))))
-                          .catchError((error) => ScaffoldMessenger.of(context)
-                              .showSnackBar(SnackBar(
-                                  content:
-                                      Text('Error adding athletes: $error'))));
-                    }
-                  },
-                  child: Text("Add to Competition"),
+                Spacer(),
+                Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: ElevatedButton(
+                    onPressed: addAthletesToCompetition,
+                    child: Text("Тэмцээнд нэмэх"),
+                    style: ElevatedButton.styleFrom(
+                      foregroundColor: Colors.white,
+                      backgroundColor: Color(0xFF0E6BA8),
+                      padding:
+                          EdgeInsets.symmetric(horizontal: 30, vertical: 15),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                    ),
+                  ),
                 ),
               ],
             ),

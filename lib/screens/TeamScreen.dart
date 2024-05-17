@@ -98,15 +98,29 @@ class _TeamScreenState extends State<TeamScreen> {
       alignment: Alignment.centerLeft,
       child: Wrap(
         spacing: 8.0,
+        runSpacing: 8.0,
         children: List<Widget>.generate(
           options.length,
           (int index) {
             return ChoiceChip(
-              label: Text(options[index]),
+              label: Padding(
+                padding:
+                    const EdgeInsets.symmetric(vertical: 4.0, horizontal: 8.0),
+                child: Text(
+                  options[index],
+                  style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
+                ),
+              ),
               selected: options[index] == selected,
               onSelected: (bool selected) {
                 onSelected(options[index]);
+                applyFilters();
               },
+              selectedColor: Color(0xFF0E6BA8),
+              backgroundColor: Color(0xFFA6E1FA),
+              labelStyle: TextStyle(color: Colors.white),
+              elevation: 4,
+              pressElevation: 8,
             );
           },
         ).toList(),
@@ -117,14 +131,37 @@ class _TeamScreenState extends State<TeamScreen> {
   Widget buildSearchBar() {
     return Padding(
       padding: const EdgeInsets.all(8.0),
-      child: TextField(
-        controller: searchController,
-        decoration: InputDecoration(
-          labelText: 'Search Athletes',
-          suffixIcon: Icon(Icons.search),
-          border: OutlineInputBorder(),
+      child: Container(
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(8.0),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black26,
+              blurRadius: 4.0,
+              offset: Offset(0, 2),
+            ),
+          ],
         ),
-        onChanged: filterAthletes,
+        child: TextField(
+          controller: searchController,
+          decoration: InputDecoration(
+            labelText: 'Тамирчин хайх',
+            labelStyle: TextStyle(
+                color: Color(0xFF001C55), fontWeight: FontWeight.bold),
+            prefixIcon: Icon(Icons.search, color: Color(0xFF0E6BA8)),
+            border: OutlineInputBorder(
+              borderSide: BorderSide(color: Color(0xFF001C55)),
+              borderRadius: BorderRadius.circular(8.0),
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderSide: BorderSide(color: Color(0xFF001C55), width: 2.0),
+              borderRadius: BorderRadius.circular(8.0),
+            ),
+          ),
+          onChanged: filterAthletes,
+          style: TextStyle(color: Color(0xFF001C55)),
+        ),
       ),
     );
   }
@@ -132,25 +169,42 @@ class _TeamScreenState extends State<TeamScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Миний баг')),
+      appBar: AppBar(
+        title: Text(
+          'Миний баг',
+          style: TextStyle(
+            fontSize: 24,
+            fontWeight: FontWeight.bold,
+            color: Colors.white,
+          ),
+        ),
+        backgroundColor: Color(0xFF001C55),
+      ),
       body: isLoading
           ? Center(child: CircularProgressIndicator())
           : Column(
               children: [
                 buildSearchBar(),
-                buildFilterChips('Gender', genders, selectedGender, (value) {
-                  setState(() {
-                    selectedGender = value;
-                    applyFilters();
-                  });
-                }),
-                buildFilterChips('Age Group', ageGroups, selectedAgeGroup,
-                    (value) {
-                  setState(() {
-                    selectedAgeGroup = value;
-                    applyFilters();
-                  });
-                }),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: buildFilterChips('Gender', genders, selectedGender,
+                      (value) {
+                    setState(() {
+                      selectedGender = value;
+                      applyFilters();
+                    });
+                  }),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: buildFilterChips(
+                      'Age Group', ageGroups, selectedAgeGroup, (value) {
+                    setState(() {
+                      selectedAgeGroup = value;
+                      applyFilters();
+                    });
+                  }),
+                ),
                 Expanded(
                   child: ListView.builder(
                     itemCount: filteredAthletes.length,
@@ -160,9 +214,14 @@ class _TeamScreenState extends State<TeamScreen> {
                         leading: CircleAvatar(
                           backgroundImage: NetworkImage(athlete.profilePic),
                         ),
-                        title: Text('${athlete.firstName} ${athlete.lastName}'),
+                        title: Text(
+                          '${athlete.firstName} ${athlete.lastName}',
+                          style: TextStyle(color: Color(0xFF001C55)),
+                        ),
                         subtitle: Text(
-                            'Нас: ${athlete.age}    Хүйс: ${athlete.gender}'),
+                          'Нас: ${athlete.age}    Хүйс: ${athlete.gender}',
+                          style: TextStyle(color: Color(0xFF0A2472)),
+                        ),
                       );
                     },
                   ),

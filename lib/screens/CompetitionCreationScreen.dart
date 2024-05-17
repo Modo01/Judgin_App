@@ -293,8 +293,7 @@ class _CompetitionCreationScreenState extends State<CompetitionCreationScreen> {
                       _formKey.currentState!.save();
                       Map<String, dynamic> competitionData = {
                         'name': _nameController.text,
-                        'startDate': Timestamp.fromDate(
-                            DateTime.parse(_startDateController.text)),
+                        'startDate': _startDateController.text,
                         'location': _locationController.text,
                         'ageGroup': _selectedAgeGroups,
                         'categories': _selectedCategories,

@@ -1,6 +1,6 @@
 class Score {
   final String competitionId;
-  final String attendantId; // Change from athleteId to attendantId
+  final String attendantId; 
   final String judgeId;
   final String category;
   final double scoreValue;
@@ -9,7 +9,7 @@ class Score {
 
   Score({
     required this.competitionId,
-    required this.attendantId, // Change from athleteId to attendantId
+    required this.attendantId, 
     required this.judgeId,
     required this.category,
     required this.scoreValue,
@@ -20,7 +20,7 @@ class Score {
   factory Score.fromMap(Map<String, dynamic> data) {
     return Score(
       competitionId: data['competitionId'],
-      attendantId: data['attendantId'], // Change from athleteId to attendantId
+      attendantId: data['attendantId'], 
       judgeId: data['judgeId'],
       category: data['category'],
       scoreValue: data['scoreValue'],
@@ -32,7 +32,7 @@ class Score {
   Map<String, dynamic> toMap() {
     return {
       'competitionId': competitionId,
-      'attendantId': attendantId, // Change from athleteId to attendantId
+      'attendantId': attendantId, 
       'judgeId': judgeId,
       'category': category,
       'scoreValue': scoreValue,

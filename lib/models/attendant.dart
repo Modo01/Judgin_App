@@ -5,7 +5,7 @@ class Attendant {
   String attendantName;
   String ageGroup;
   String category;
-  List<String> athletes;  // List of athlete IDs
+  List<String> athletes; 
   String competitionId;
 
   Attendant({
@@ -17,7 +17,7 @@ class Attendant {
     required this.competitionId,
   });
 
-  // Converts a Firestore document to an Attendant object
+  
   factory Attendant.fromFirestore(DocumentSnapshot<Map<String, dynamic>> doc) {
     Map<String, dynamic> data = doc.data()!;
     return Attendant(
@@ -30,7 +30,7 @@ class Attendant {
     );
   }
 
-  // Converts the Attendant object to a Map
+  
   Map<String, dynamic> toMap() {
     return {
       'attendantId': attendantId,

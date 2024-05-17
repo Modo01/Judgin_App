@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:judging_app/screens/CompetitionListScreen.dart'; // Assuming this exists
-import 'package:judging_app/screens/ProfileScreen.dart'; // Assuming this exists
-import 'package:judging_app/screens/TeamScreen.dart'; // Assuming this exists
+import 'package:judging_app/screens/CompetitionListScreen.dart'; 
+import 'package:judging_app/screens/ProfileScreen.dart'; 
+import 'package:judging_app/screens/TeamScreen.dart'; 
 
 class TrainerScreen extends StatefulWidget {
   const TrainerScreen({super.key});
@@ -33,7 +33,7 @@ class _TrainerScreenState extends State<TrainerScreen> {
         backgroundColor: Color(0xFF001C55),
         selectedItemColor: Color(0xFFA6E1FA),
         unselectedItemColor:
-            Color(0xFF0E6BA8), // Changed color for better visibility
+            Color(0xFF0E6BA8), 
         onTap: onTabTapped,
         currentIndex: _currentIndex,
         items: [

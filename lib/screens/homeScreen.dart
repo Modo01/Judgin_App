@@ -18,7 +18,7 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     final ap = Provider.of<AuthProvider>(context, listen: false);
 
-    // On building the HomeScreen, we check the role and redirect accordingly.
+  
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (ap.userModel.role.isNotEmpty) {
         navigateToRoleSpecificScreen(ap.userModel.role);
@@ -30,7 +30,7 @@ class _HomeScreenState extends State<HomeScreen> {
         title: const Text("Home"),
       ),
       body: Center(
-        child: CircularProgressIndicator(),  // Show loading while decision is being made
+        child: CircularProgressIndicator(),  
       ),
     );
   }

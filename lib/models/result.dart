@@ -6,7 +6,7 @@ class Result {
   final String category;
   final double finalScore;
   final int rank;
-  final String ageGroup; // Add ageGroup field
+  final String ageGroup; 
 
   Result({
     required this.resultId,
@@ -16,7 +16,7 @@ class Result {
     required this.category,
     required this.finalScore,
     required this.rank,
-    required this.ageGroup, // Initialize ageGroup field
+    required this.ageGroup,
   });
 
   factory Result.fromMap(Map<String, dynamic> data) {
@@ -28,7 +28,7 @@ class Result {
       category: data['category'],
       finalScore: data['finalScore'],
       rank: data['rank'],
-      ageGroup: data['ageGroup'], // Add ageGroup field
+      ageGroup: data['ageGroup'], 
     );
   }
 
@@ -41,7 +41,7 @@ class Result {
       'category': category,
       'finalScore': finalScore,
       'rank': rank,
-      'ageGroup': ageGroup, // Add ageGroup field
+      'ageGroup': ageGroup, 
     };
   }
 

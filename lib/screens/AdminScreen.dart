@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:judging_app/screens/CompetitionListScreen.dart'; // Assuming this exists
-import 'package:judging_app/screens/ProfileScreen.dart'; // Assuming this exists
-import 'package:judging_app/screens/CompetitionCreationScreen.dart'; // Assuming this exists
+import 'package:judging_app/screens/CompetitionListScreen.dart'; 
+import 'package:judging_app/screens/ProfileScreen.dart';
+import 'package:judging_app/screens/CompetitionCreationScreen.dart';
 
 class AdminScreen extends StatefulWidget {
   const AdminScreen({super.key});
@@ -38,8 +38,7 @@ class _AdminScreenState extends State<AdminScreen> {
       bottomNavigationBar: BottomNavigationBar(
         backgroundColor: Color(0xFF001C55),
         selectedItemColor: Color(0xFFA6E1FA),
-        unselectedItemColor:
-            Color(0xFF0E6BA8), // Changed color for better visibility
+        unselectedItemColor: Color(0xFF0E6BA8),
         onTap: _onItemTapped,
         currentIndex: _selectedIndex,
         items: [
@@ -58,9 +57,9 @@ class _AdminScreenState extends State<AdminScreen> {
               onPressed: _navigateToCompetitionCreation,
               child: Icon(Icons.add, color: Colors.white),
               backgroundColor: Color(0xFF0E6BA8),
-              tooltip: 'Add Competition',
+              tooltip: 'Тэмцээн нэмэх',
             )
-          : null, // Only show the FAB when the competitions list is displayed
+          : null,
     );
   }
 }

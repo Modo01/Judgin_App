@@ -71,9 +71,7 @@ class _AttendantDetailsScreenState extends State<AttendantDetailsScreen> {
           fetchScores(widget.attendantId, competitionId),
         ]);
       }
-    } catch (e) {
-      // Handle error
-    }
+    } catch (e) {}
     setState(() => isLoading = false);
   }
 
@@ -88,9 +86,7 @@ class _AttendantDetailsScreenState extends State<AttendantDetailsScreen> {
         Map<String, dynamic> judgesMap = competitionData.data()!['judges'];
         await fetchJudges(judgesMap);
       }
-    } catch (e) {
-      // Handle error
-    }
+    } catch (e) {}
   }
 
   Future<void> fetchJudges(Map<String, dynamic> judgesMap) async {
@@ -110,9 +106,7 @@ class _AttendantDetailsScreenState extends State<AttendantDetailsScreen> {
           fetchedJudges.add(Tuple2(judge, judgeType));
         }
       }));
-    } catch (e) {
-      // Handle error
-    }
+    } catch (e) {}
     setState(() {
       judges = fetchedJudges;
     });
@@ -131,9 +125,7 @@ class _AttendantDetailsScreenState extends State<AttendantDetailsScreen> {
             UserModel.fromMap(doc.data() as Map<String, dynamic>);
         fetchedAthletes.add(athlete);
       }
-    } catch (e) {
-      // Handle error
-    }
+    } catch (e) {}
     setState(() {
       athletes = fetchedAthletes;
     });
@@ -151,9 +143,7 @@ class _AttendantDetailsScreenState extends State<AttendantDetailsScreen> {
         Score score = Score.fromMap(doc.data() as Map<String, dynamic>);
         fetchedScores.add(score);
       }
-    } catch (e) {
-      // Handle error
-    }
+    } catch (e) {}
     setState(() {
       scores = fetchedScores;
     });

@@ -6,11 +6,11 @@ class UserModel {
   String role;
   String profilePic;
   String phoneNumber;
-  String? clubName; // Optional: specific to trainers
+  String? clubName; 
   String? trainerPhone;
   String? nationalId;
   String? gender;
-  int? age; // Optional: specific to athletes
+  int? age; 
 
   UserModel({
     required this.userId,
@@ -36,13 +36,13 @@ class UserModel {
       'role': role,
       'profilePic': profilePic,
       'phoneNumber': phoneNumber,
-      'clubName': clubName, // Serialize if not null
+      'clubName': clubName, 
       'trainerPhone': trainerPhone,
       'nationalId': nationalId,
       'gender': gender,
       'age': age,
     };
-    map.removeWhere((key, value) => value == null); // Remove null entries
+    map.removeWhere((key, value) => value == null); 
     return map;
   }
 
